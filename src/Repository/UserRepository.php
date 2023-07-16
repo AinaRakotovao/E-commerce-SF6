@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<Users>
-* @implements PasswordUpgraderInterface<Users>
  *
  * @method Users|null find($id, $lockMode = null, $lockVersion = null)
  * @method Users|null findOneBy(array $criteria, array $orderBy = null)
@@ -25,6 +24,24 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         parent::__construct($registry, Users::class);
     }
 
+    public function save(Users $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Users $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
@@ -35,12 +52,12 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         }
 
         $user->setPassword($newHashedPassword);
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
+
+        $this->save($user, true);
     }
 
 //    /**
-//     * @return User[] Returns an array of User objects
+//     * @return Users[] Returns an array of Users objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +71,7 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?User
+//    public function findOneBySomeField($value): ?Users
 //    {
 //        return $this->createQueryBuilder('u')
 //            ->andWhere('u.exampleField = :val')
