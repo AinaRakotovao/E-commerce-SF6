@@ -21,6 +21,24 @@ class CouponsRepository extends ServiceEntityRepository
         parent::__construct($registry, Coupons::class);
     }
 
+    public function save(Coupons $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Coupons $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Coupons[] Returns an array of Coupons objects
 //     */

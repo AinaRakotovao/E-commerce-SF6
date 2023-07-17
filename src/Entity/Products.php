@@ -46,6 +46,7 @@ class Products
     {
         $this->images = new ArrayCollection();
         $this->orderesDetails = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
